@@ -1,0 +1,21 @@
+echo "# gameoflife-dockerfile" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/santhoshd402/gameoflife-dockerfile.git
+git push -u origin master
+
+/home/jenkins/gol-docker
+/home/jenkins/gol-docker/gameoflife-web/target/gameoflife.war
+
+cp /home/jenkins/gol-docker/gameoflife-web/target/gameoflife.war /home/jenkins/gol-docker
+ 
+ COPY gameoflife.war /usr/local/tomcat/webapps
+
+node {
+stage('first') {
+   git 'https://github.com/wakaleo/game-of-life.git'
+   sh label: '', script: 'mvn package'
+}
+}
+/home/jenkins/workspace/gol-docker

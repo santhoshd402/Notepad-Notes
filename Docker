@@ -1,0 +1,119 @@
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
+sudo usermod -aG docker ubuntu
+
+
+docker image build -t spc:ubuntu
+docker image build -t first:1.0 .
+docker container run --name  -P -d spc:ubuntu
+docker ps
+docker container stop id
+docker ps -a
+docker stages ---- up, pause, exited, remove
+docker container rm -f $(docker ps -a -q)
+docker container start id
+we cant remove container when it is in up state by using -f force we can remove
+docker container run  and docker container 
+
+CMD and ENTRYPOINT are execute when container is creaating
+cmd can be overwritten while we run contianer by passing 
+entrypoint cant be overwritten
+how to get inside container
+while creating/runnimg---- it is interactive mode
+
+ https://qt-s3-new-testing.s3-us-west-2.amazonaws.com/spring-petclinic.jar
+ java -jar spring-petclinic.jar
+ 
+ https://qt-s3-new-testing.s3-us-west-2.amazonaws.com/gameoflife.war
+ /usr/local/tomcat8/webapps/gameoflife.war
+
+==================05-10-2019===============
+Docker volumes:-
+> docker volume
+> tmpfs
+> binding mount
+> namedpipe
+docker volume is best to use 
+volume creating 
+docker container run --name anyname -v volumename:targetfolder tomcat:8
+docker container run --name anyname --mount 'typr=volume,src=myvol,targeet=/tools' -d alpine sleep 1d
+docker exec -it 0d13b77dc23d /bin/bash
+docker container exec cont6 ls /apps
+docker stats
+
+we can create container with volume(here this volume is remained after container killed) and existed image
+docker container run -d -P -v firstvol:/usr/local/tomcat first:1.0
+
+docker container run --name mytomgol -d -p 8080:8080
+
+====================================================================Document===========================================
+-- Approach1:------- volume using file
+
+first we will write Dockfile 
+we will create a optional directory and we create Dockfile with below context
+...
+FROM tomcat:8
+VOLUME /usr/local/tomcat
+CMD [ "catalina.sh","run" ]
+...
+get into created directory and create image using that file 
+docker image build -t first:1.0 .
+and then create container using the above image 
+docker container run -d -P first:1.0 
+now check for volumes created
+docker volume ls 
+now get into path </var/lib/docker/volumes/a9332310f35f030238a2cb4ac7bcfe2fed3240f80c70055206d619517ab6a179/_data>
+create some test folders or files to test whether these effects reflected in container volume or not
+get into conatiner 
+docker exec -it 0d13b77dc23d /bin/bash
+now with the above cmd execution defalutly we are in usr/local/tomcat
+now check here for the files folders what ever we created in host, whether those reflected here. it should reflect that is success state
+
+-- Approach2:------------ Manual creation of volume and attach
+
+we can create image or else we can use already created above
+now manually create volume
+docker volume create firstvol
+now create container using above image by attaching the manually created volume
+docker container run -d -P -v firstvol:/usr/local/tomcat first:1.0
+now get into below docker hostpath and do some operations on the created volume
+/var/lib/docker/volumes/firstvol/_data
+login into container 
+docker container exec -it 0f77880c9211 /bin/bash
+defaultly we are in /usr/local/tomcat path check here whether the effects done in host volume reflected here or not
+
+
+
+==================docker networks=============================================
+---to ping other conatiner without login into conatiner with ip 
+docker exec 9ce1ac15ced7 ping 172.17.0.2
+-- to ping other conatiner without login into conatiner with name(dns name) [note: default bridge not access with name]
+docker exec 9ce1ac15ced7 ping cont1
+--- user define bridge creation
+docker network create --ip-range 192.168.0.0/16 --subnet 192.168.0.0/24 mybrdg
+--- to see available networks
+docker network ls
+---to see details of created network
+docker network inspect mybrdg
+--- connect conatiners to user define bridge network
+docker network connect mybrdg cont2
+--- disconnect conatiner from default network
+docker network disconnect bridge cont2
+--now check for name ping working or not
+docker exec 0e95ef3781f0 ping cont1
+
+
+
+======================docker repository==============
+create a repository in dockerhub
+from docker host run 
+docker login
+give id and pwd santhud402 Santhu@d402
+--- by using conatiner id and image id which was used in creating container like below it committed to santhud402
+ docker commit 9557fdacb8f6 santhud402/myfirstrepo/tomcat:8
+----now push 
+ docker push santhud402/myfirstrepo/tomcat:8
+
+
+
+

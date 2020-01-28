@@ -1,0 +1,154 @@
+=========================29-08-2019=================================================
+sudo apt-get update 
+sudo apt-get install maven -y
+sudo apt-get install openjdk-8-jdk -y
+wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -
+sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list' 
+sudo apt-get update
+sudo apt-get install jenkins -y
+
+
+
+https://github.com/wakaleo/game-of-life.git
+spring petclinic
+
+java ----> jar/war/ear  (bytecode)
+
+compile is nthg but conv code files into os understandble format ex: jar/war/ear foramt
+
+build tools----> Ant,Maven,gradle
+
+maven---> convention
+1. pom.xml ---> project object model   (metadata ,dependencis)
+
+scheduler---> 
+Maven ---> download/resolve dependencis    (global repositary)
+
+folder Tructure
+testingmaven
+src main&test from main--->java com qt
+test
+pom.xml
+
+mvn --version
+mvn compile
+mvn package  [default jar]
+
+aws maven repositary
+java guava dependencis
+
+maven goals----> compile,test(unit testing),package,install,deploy,clean
+install nothing but copying what you built and pom file to pom.xml
+deploy ----> nthg but what you built is copying to remote repositary(we wont use deploy in maven)
+clean ---> nthg but removing target folder
+
+mvn clean package (it will clean prev and strt package )
+
+depends on technology we will do compile for nodejs,python no need, we  delpoy directly go for test cases
+
+
+choco install maven
+
+==============================30-08-2019=============================
+sudo vi /etc/ssh/sshd_config
+
+
+vi sudo
+sudo -i
+su jenkins
+var/lib/jenkins
+sudo apt-cache madison maven
+
+========================ssh-key-gen===========
+ssh-keygen
+cd .ssh
+ssh-copy-id jenkins@nodepubid
+
+
+non-jenkins
+git clone url
+cd spring-
+mvn package
+-->build now
+
+free-projects:
+spring-boot
+shopizer
+open-MRS
+
+=============================31-08-2019=================================
+dotnet build----> query in google dotnet core build
+ask cmnds/s/w require to build
+1. build same project parallel is not possible ny default
+executers=> 100 
+3.
+
+Scenario:-----
+HRMS=> redhat develop by java
+hrms2.0 => ubuntu develop by python
+
+
+distributed builds
+
+
+JNLP---jenkins in linux node in windows then we use JNLP` (Java Network Launching Protocol) both have tcp
+SSH---- jenkins in linux node in linux then we can establish conn by ssh we need ussrnamand paswd
+   ----> all nodes should install with java maven like required s/w
+
+vi /etc/ssh/sshd_config  change pwd to yes
+service sshd restart
+adduser jenkins
+visudo
+jenkins ALL=(ALL:ALL) NOPASSWD: ALL
+
+ssh jenkins@ip(pub/priv)
+gameoflife-web/target/*.war
+
+gameoflife-web/target/surefire-reports/*.xml
+
+==============5-9-2019==================
+
+1. recreate groups
+2. LDAP
+3. linux/unix groups
+
+--###########08-9-2019######
+
+artifactory RESTAPI
+
+-- example pipiline script:---
+pipeline {
+   agent any
+
+   tools {
+      // Install the Maven version configured as "M3" and add it to the path.
+      maven "M3"
+   }
+
+   stages {
+      stage('Build') {
+         steps {
+            // Get some code from a GitHub repository
+            git 'https://github.com/jglick/simple-maven-project-with-tests.git'
+
+            // Run Maven on a Unix agent.
+            sh "mvn -Dmaven.test.failure.ignore=true clean package"
+
+            // To run Maven on a Windows agent, use
+            // bat "mvn -Dmaven.test.failure.ignore=true clean package"
+         }
+
+         post {
+            // If Maven was able to run the tests, even if some of the test
+            // failed, record the test results and archive the jar file.
+            success {
+               junit '**/target/surefire-reports/TEST-*.xml'
+               archiveArtifacts 'target/*.jar'
+            }
+         }
+      }
+   }
+}
+
+
+

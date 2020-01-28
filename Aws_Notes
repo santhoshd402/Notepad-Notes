@@ -1,0 +1,131 @@
+1. cretae AMI for ec2 machine with your app installed
+2. use this image to create asg
+3. tell aws when to inc/dec ec2 
+4. use auto scaling for stateless application
+5. using asg =>
+             i want 5 servers 
+
+app&web servers
+
+cpu uitlization > (x)  then increse machine
+cpu uitlization < (y)  then decrease machine
+
+
+-----------Database-----------
+aws rds create-db-instance --db-instance-identifier "qt-rds-from-cli" --db-instance-class "db.t2.micro" --allocated-storage 20 --engine "mysql" --master-username "admin" --master-user-password "Santhu.d402" --availability-zone "us-west-2a" --publicly-accessible
+
+--vpc-security-group-ids "vpc-9f338ce7"
+--db-security-groups "sg-088d77a8ef7d630c0"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+
+aws rds describe-db-instances qt-rds-from-cli
+
+aws rds delete-db-instance --db-instance-identifier qt-rds-from-cli --skip-final-snapshot --delete-automated-backups
+-------------------------------
+
+
+=============================vpc peering &VPN====================================
+#VPC
+aws ec2 create-vpc --cidr-block "10.10.0.0/16"
+"vpc-0220f9375710e9489",
+#subnet
+aws ec2 create-subnet --cidr-block '10.10.0.0/24' --vpc-id "vpc-0220f9375710e9489" --availability-zone us-west-2a
+--"subnet-089d1a840182de688",
+aws ec2 create-subnet --cidr-block '10.10.1.0/24' --vpc-id "vpc-0220f9375710e9489" --availability-zone us-west-2a
+--"subnet-0480b85387b53d0a3",
+aws ec2 create-subnet --cidr-block '10.10.2.0/24' --vpc-id "vpc-0220f9375710e9489" --availability-zone us-west-2a
+--"subnet-03fe28c8bce1bc28c",
+
+#NACL----
+aws ec2 create-network-acl --vpc-id "vpc-0220f9375710e9489" 
+----"acl-0da1412d27094a3f8",
+#network-acl-entry
+aws ec2 create-network-acl-entry --network-acl-id acl-0da1412d27094a3f8 --ingress --port-range From=80,To=80 --protocol tcp --rule-action 'allow' --cidr-block '10.10.0.0/16' --rule-number '100'
+aws ec2 create-network-acl-entry --network-acl-id acl-0da1412d27094a3f8 --ingress --port-range From=22,To=22 --protocol tcp --rule-action 'allow' --cidr-block '10.10.0.0/16' --rule-number '110'
+aws ec2 create-network-acl-entry --network-acl-id acl-0da1412d27094a3f8 --ingress --port-range From=1,To=1 --protocol -1 --rule-action 'allow' --cidr-block '10.10.0.0/16' --rule-number '120'
+
+aws ec2 create-network-acl-entry --network-acl-id acl-0da1412d27094a3f8 --egress --port-range From=0,To=0 --protocol -1 --rule-action 'allow' --cidr-block '10.10.0.0/16' --rule-number '100'
+## attach/replace nacl 
+aws ec2 replace-network-acl-association --association-id 'acl-0b9546cf03589da63' --network-acl-id 'acl-0da1412d27094a3f8' #(not working)
+#IGW
+aws ec2 create-internet-gateway 
+"igw-03a8237b6e4b941b3",
+#attach igw:
+aws ec2 attach-internet-gateway --internet-gateway-id "igw-03a8237b6e4b941b3" --vpc-id "vpc-0220f9375710e9489"
+#router:
+aws ec2 create-route-table --vpc-id vpc-0220f9375710e9489
+ ----"RouteTableId": "rtb-0eb07a772943d5134",
+
+#create route:
+aws ec2 create-route --gateway-id igw-03a8237b6e4b941b3 --route-table-id rtb-0eb07a772943d5134 --destination-cidr-block 10.10.0.0/24
+
+#associate:
+aws ec2 associate-route-table --subnet-id subnet-089d1a840182de688 --route-table-id rtb-0eb07a772943d5134
+"rtbassoc-0148c07690fc20721"
+aws ec2 associate-route-table --subnet-id subnet-0480b85387b53d0a3 --route-table-id rtb-0eb07a772943d5134
+"rtbassoc-033dfff4ba8e04a4a"
+aws ec2 associate-route-table --subnet-id subnet-03fe28c8bce1bc28c --route-table-id rtb-0eb07a772943d5134
+"rtbassoc-00af1bbb1215936eb"
+
+#################singapore-region###########################
+
+aws ec2 create-vpc --cidr-block "192.168.0.0/16" --region 'ap-southeast-1'
+---"vpc-075ff4fab37fe1196",
+aws ec2 create-subnet --cidr-block '192.168.0.0/24' --vpc-id "vpc-075ff4fab37fe1196" --availability-zone ap-southeast-1a --region 'ap-southeast-1'
+---"subnet-021208d1f13bd558e",
+aws ec2 create-subnet --cidr-block '192.168.1.0/24' --vpc-id "vpc-075ff4fab37fe1196" --availability-zone ap-southeast-1a --region 'ap-southeast-1'
+----"subnet-08956a800d9a40807",
+aws ec2 create-route-table --vpc-id vpc-075ff4fab37fe1196 --region 'ap-southeast-1'
+---- "RouteTableId": "rtb-0d342416e72ec72cc",
+
+aws ec2 create-network-acl --vpc-id "vpc-075ff4fab37fe1196" 
+
+ingress,agress
+
+task:-
+1.nacl 
+> allow everything from vpc range
+200 10.10.0.0/16 allow
+allow 80
+allow 22
+ping (Icmp4)
+2.nacl
+200 10.10.0.0/16 allow
+
+SG> 
+
+aws ec2 create-internet-gateway
+aws ec2 create-internet-gateway --region ""
+
+attach igw:
+aws ec2 attach-internet-gateway --internet-gateway-id < "" --vpc-id ""
+aws ec2 attach-internet-gateway --internet-gateway-id < "" --vpc-id "" --region ""
+
+router:
+aws ec2   create-route-table --vpc-id ""
+aws ec2   create-route-table --vpc-id "" --region ""
+
+VPN:
+point-site
+site to site
+
+vpc peering
+one n/w to other n/w irrespective region----internally it works on vpn
+
+
+
+
+create route:
+aws ec2  create-route --gateway-id --route-table-id
+
+associate:
+aws ec2 associate-route-table --subnet-id --route-table-id
+aws ec2 associate-route-table --subnet-id --route-table-id --region 
+
+
+
+
+
+
+
+
+

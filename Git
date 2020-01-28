@@ -1,0 +1,97 @@
+git reset ---> remove changes from stage only
+git reset --hard ---> it will remove changes from stage and work dir (works before commits)
+git reset --hard HEAD~2  ----> it will remove last two logs(commits)from localrepo and stage and even in workdir
+
+git reset --soft HEAD~2   ----> it will remove last 2 logs(commits) from localrepo and store in stage 
+
+git add src.txt --> it will add specific file
+git add .   ---> it will add all from current dir
+git add -all   --> it will add all chanes
+
+git init
+git status
+git log
+git commit -m "any msg"
+git clean -fd   ---> remove untracked files
+git add -u   --->adding tracked files only
+git rm abc.txt  ---> removing file
+
+
+git config --global user.name "santhoshd402"
+git config --global user.email santhosh.d402@gmail.com
+santhu <abc@gmail.com>
+
+git remote add origin https://github.com/santhoshd402/Santhu.git
+git push -u origin master
+git branch subsample
+git checkout subsample
+git commit -m "new branch test"
+git push -u origin subsample
+
+
+1. working tree
+2. staging area
+3. local repo
+4. remote repo
+
+git checkout -b new_brnch   [its create branch and locate to there]
+
+=========================
+commit id-
+sha-1 hash( changeset,auther,datetime,msg)
+
+commit will have files and folders
+file-object
+folder-tree 
+
+git cat-file -p commiteid
+
+git cat-file -p treename
+
+echo "hello" >> test1.txt
+
+git status compare hashing of work and local
+
+git stores hash and tree
+branch nthg but commite id --- it is always latest
+
+git branch
+git checkout master
+git merge for_infy  (internally fastforward)
+
+git cherry-pick commit_id
+git cherry-pick cmt_id..cmt_id  (range)
+git cherry-pick range
+
+git rebase -i HEAD~2
+
+git log  (temporary logs )
+git reflog   (all committe history even delete committes but it should happens before garbage collection happens)
+
+
+1. ignoring folder/file
+2. stash (5th area of git)
+3. git bare repos
+4. branching stratagy
+5. code commit
+6. azure source repo
+7. client hooks & server hooks
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------
+GitHub account
+Id: santhoshd402
+Mail: santhosh.d402@gmail.com
+Pwd: sntu@d402
+--------------------

@@ -1,0 +1,114 @@
+Ansible is push based configuration management system
+we have AnsibleControlServer-CMS and nodes
+here ACS will intiate connection/communication to server like you have some work to be done by you -PUSH
+
+-------FOR UBUNTU
+ACS and nodes should ping each other for that we create one user with adminpermissions(sudo) in all nodes and ACS using below flow
+login to machine and get into sudo user
+sudo -i
+vi /etc/ssh/sshd_config 
+--open above file and scroll down to modify as "PasswordAuthentication yes"
+service sshd restart
+--later add a admin user named as you like ex-'ansible'
+adduser ansible
+--it will ask pwd enter and create later we have to add this user to sudo group to get sudo permissions
+visudo
+--here add the below line to sudo group
+ansible ALL=(ALL:ALL) NOPASSWD:ALL
+------FOR CENTOS
+login to machine and get into sudo user
+sudo -i
+vi /etc/ssh/sshd_config 
+--open above file and scroll down to un comment PasswordAuthentication yes and #PasswordAuthentication No
+service sshd restart
+--later add a admin user named as you like ex-'ansible'
+adduser ansible
+passwd ansible
+--it will ask pwd enter and create later we have to add this user to wheel group to get sudo permissions
+visudo
+--here add the below line to wheel group
+ansible         ALL=(ALL)       NOPASSWD: ALL
+
+---after add user now we have to establish communication b/w nodes and ACS
+login to acs and switch root and then to ansible user
+come to home path run below cmds
+ssh-keygen
+ssh-copy-id <username>@<privateip-node>
+--copy this key to all nodes including localhost also
+
+-->now install ansible and python on ACS 
+sudo apt update
+sudo apt install software-properties-common -y
+sudo apt-add-repository --yes --update ppa:ansible/ansible
+sudo apt install ansible -y
+
+-->install only python on all nodes
+sudo apt update
+sudo apt install software-properties-common -y
+sudo apt-add-repository --yes --update ppa:ansible/ansible
+sudo apt-get install python -y
+
+here what ever we write playbook in ansible, ansible will convert into python code then python will do work
+
+the below cmnd will show the which nodes are connected to ACS
+ansible -m ping all
+
+-----ubuntu
+sudo apt update
+sudo apt install apache2 -y
+sudo apt install php libapache2-mod-php php-mysql php-cli -y
+sudo systemctl restart apache2 
+sudo nano /var/www/html/info.php
+<?php
+phpinfo();
+?>
+
+
+----centos
+sudo yum install httpd -y
+sudo systemctl start httpd.service
+sudo systemctl enable httpd.service
+sudo yum install php php-mysql -y
+sudo systemctl restart httpd.service
+sudo vi /var/www/html/info.php
+<?php phpinfo(); ?>
+
+---------notes----
+if username changed from ACS to Node we have to mention in inventory file like below
+<node-ip> ansible_connection=ssh   ansible_user=ansible2
+172.31.93.108 ansible_user=ansible2
+--> ansible module debug
+
+
+-----Template
+create a file readme.txt.j2
+
+Create by Ansible
+Os family is {{ ansible_os_family }}
+Os distribution is {{ ansible_distribution }}
+version is {{ ansible_distribution_version }}
+
+create a playbook something like config.yml
+
+---
+- hosts: all
+  tasks:
+  - name: copy the readme
+    template:
+      src: Readme.txt.j2
+      dest: "{{ ansible_user_dir }}/Readme.txt"    --- for this become is to remove  for concatination we use ""
+   or dest: /Readme.txt                         ----- become we can mention
+   
+we can mention for a task as "become: no"
+
+- hosts: all
+  become: yes
+  tasks:
+  - name: copy the readme
+    become: no
+    template:
+	  src: Readme.txt.j2
+      dest: "{{ ansible_user_dir }}/Readme.txt"
+
+
+
