@@ -1,5 +1,6 @@
 git reset ---> remove changes from stage only
 git reset --hard ---> it will remove changes from stage and work dir (works before commits)
+git reset --soft ---> it will remove from local repo and store in stage 
 git reset --hard HEAD~2  ----> it will remove last two logs(commits)from localrepo and stage and even in workdir
 
 git reset --soft HEAD~2   ----> it will remove last 2 logs(commits) from localrepo and store in stage 
@@ -78,7 +79,10 @@ git reflog   (all committe history even delete committes but it should happens b
 7. client hooks & server hooks
 
 
+https://github.com/kshaanu/gitpr.git-- 
 
+git remote add origin https://github.com/kshaanu/gitpr.git
+git push -u origin master
 
 
 
@@ -93,5 +97,5 @@ git reflog   (all committe history even delete committes but it should happens b
 GitHub account
 Id: santhoshd402
 Mail: santhosh.d402@gmail.com
-Pwd: sntu@d402
+Pwd: Sntu@d402
 --------------------

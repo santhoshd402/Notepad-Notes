@@ -1,0 +1,70 @@
+git init 
+it will intiate the reposiry in that folder
+git --version 2.22.0
+
+basic-cmnds::---
+git init
+git status
+git log
+git commit -m "any msg"
+git clean -fd   ---> remove untracked files
+git add -u   --->adding tracked files only
+git rm abc.txt  ---> removing file
+
+workdir--->stage(index-area)--->localrepo--->remoterepo--->stash
+
+---the below cmnds are used for user recognation
+git config --global user.name "santhoshd402"
+git config --global user.email santhosh.d402@gmail.com
+
+sc-1----
+create 2 folders with unique names
+in one folder create a file and other fol keep empty
+
+git status 
+ it will show which are ready to commit(untracked fol)... it doesn't show fol2 bcz its empty dir
+
+git add src.txt --> it will add specific file
+git add .   ---> it will add all from work dir to stage
+git add -all   --> it will add all chanes 
+
+git commit -m "any msg"  ---> committing changes to local reposiry
+
+git reset ---> remove changes from stage only (means before commit)
+git reset --mixed ---> it will remove changes from localrepo and stage but not in workdir
+git reset --hard ---> it will remove changes from stage and work dir and localrepo also (works before commits)
+git reset --soft ---> it will remove from local repo and store in stage 
+git reset --hard HEAD~2  ----> it will remove last two logs(commits)from localrepo and stage and even in workdir
+git reset --soft HEAD~2   ----> it will remove last 2 logs(commits) from localrepo and store in 
+
+https://i.stack.imgur.com/qRAte.jpg   (this image tells the diff b/w reset-models ) 
+
+
+-----working with remote-location
+create a reposiry in github
+
+add that repository to our workdir
+
+cmnds:--
+git remote add origin <gitrepo url which one repo u want to add>
+git remote add origin https://github.com/santhoshd402/Santhu.git
+git push -u origin master (to push from loaclrepo to remote repo master branch)
+
+git branch subsample
+git checkout subsample
+git commit -m "new branch test"
+git push -u origin subsample
+
+
+revert---
+Eg:- a bug happen a particular commit id we want to remove
+it will remove the changes at a particular commit in the workdir and remoterepo location
+git revert <commit id of you want to change/remove at that commit>
+git log
+git push -u origin master
+
+
+
+
+
+
