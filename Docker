@@ -2,9 +2,27 @@ curl -fsSL https://get.docker.com -o get-docker.sh
 sh get-docker.sh
 sudo usermod -aG docker ubuntu
 
+DOCKER:-
+- docker is a containerized technology. used to run applications on conatiners
+we can create conatiners from image and image crestaes by writing Dockerfile with instructions
+- Container is an isolated area, with all the necessary resources available to run the application (which are shared)
+- With containers scaling and portability becomes extremely simple.
+-(*) for example if we want to create a webapp with db, normally we require 2 machines which thay seperatley had 2 HD and 2 OS
+  but in docker we can create 2 conatainers in same node so they share OS & storage. lot of burden is resolved
+- docker uses less storage bcz of image layer reusebulity
+
+Docker components:- 
+1. client:- client is just a terminal whichwill forward our command to daemon(DE) an give reponse
+2. Daemon(Docker Engine):- image(https://i1.wp.com/directdevops.blog/wp-content/uploads/2020/01/docker5.png?w=800&ssl=1)
+
+
+
+docker image layers
+
 
 docker image build -t spc:ubuntu
 docker image build -t first:1.0 .
+docker inspect first:1.0 ---> to inspect image layers
 docker container run --name  -P -d spc:ubuntu
 docker ps
 docker container stop id
