@@ -1,0 +1,50 @@
+#created windows server data center 2016 with size D4s_v3
+# connect to wnidows server and install choco and chrome
+# open server management, click on add roles and features and enable dhcp and Hyper-v  (enable restart in last option or we can do manual)
+   dhcp- to allocate ip address to vm
+   hyperv- to create/ launch vm
+# Open DHCP--> hypervmachine--> ipv4(RC on ipv4 and create new scope)
+     while creating scope we have to metion ip range to allocate ip to machinesex:(192.168.0.100-192.168.0.200), and add natgateway ip like 192.168.0.1
+	 at router(def_gateway)
+# enable virtualization doc from here(https://docs.microsoft.com/en-us/azure/virtual-machines/windows/nested-virtualization) or follow below steps
+  New-VMSwitch -Name "InternalNAT" -SwitchType Internal
+  Get-NetAdapter    [here you get output of _ifIndex_ value which one to change in below command]
+  New-NetIPAddress -IPAddress 192.168.0.1 -PrefixLength 24 -InterfaceIndex 13   [if you get 12 in above cmnd, replace here with 12 in place of 13 and run]
+  New-NetNat -Name "InternalNat" -InternalIPInterfaceAddressPrefix 192.168.0.0/24
+
+# download ubuntu server 16.04 from (http://releases.ubuntu.com/16.04/ubuntu-16.04.6-server-amd64.iso)
+# for windows server iso image (https://software-download.microsoft.com/download/pr/Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO)
+# Hyper-v connecter download here (https://s3.amazonaws.com/sms-connector/AWS-SMS-Connector-for-SCVMM-HyperV.zip)
+  
+
+# Open Hyper-v manager and rc on our hostname(hypervmachine) _new virtual machine_ using ubuntu iso image 
+# Like above approach select _import vm_ option and choose the hyperv connectermachine paths(which was downloaded above) choose import type as 3rd option(copy)
+# follow the aws documenentation from here(https://docs.aws.amazon.com/server-migration-service/latest/userguide/HyperV.html) from step2 in the document
+  this step is just loginand know to ip(may be) or run below steps in hyperv connecter vm
+  loginid:- ec2-user
+  pwd: ec2pass
+  and just blindly run _sudo setup.rb_ 
+  you will get options enter 2 you will get hyeprv connecter vm ip remember that ip to use in below script
+  later you can exit that machine
+  
+
+# download script from here (https://s3.amazonaws.com/sms-connector/aws-sms-hyperv-setup.ps1)
+# come to powershell downloads path run above script like ./aws-sms-hyperv-setup.ps1
+  enter option-1
+  enter ip: hypervconnecter vm ip
+  ad-user: name you given in azure while creating windows server 
+
+# now open hypervconnecter "https://<hypervconnecter vm ip>"
+  and do next set password when it ask 
+  select region and give access and secret key 
+  select hyperv (3rd one) option
+  give username password of _windows server_ which you created in azure for hyperv and _privateip_ of that machine for below ip click on trust
+  click on trust and continue till finish
+
+# Now goto SMS dashboard in aws region which you provided above
+  click on _importcatalog_ and create _replicationjob_ and give your require instructions 
+  
+
+
+
+   
