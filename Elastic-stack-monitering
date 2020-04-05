@@ -1,0 +1,64 @@
+Monitoring:---
+We have two kinds of Monitoring
+1. System Monitoring
+2. Application Monitoring
+System Monitoring:-
+ Ensuring the Servers are up and the major applications are working on the Servers
+ What are the Tools Available
+   Nagios
+   Zabbix
+   Elastic Stack (Beats)
+ Roles & Responsibilities
+   Setup Monitoring for all the servers
+   Setup Alerting to the responsible team
+   Troubleshooting failures and resolving issues mostly on permanent basis.
+Application Monitoring:-
+ Ensuring the Application is running consistently
+ Understanding User behavior
+ What are the Tools Available
+   Splunk
+   Elastic Stack
+   Data Dog (Service)
+
+Elastic-Stack:--- Flow Image(https://i1.wp.com/directdevops.blog/wp-content/uploads/2020/02/sre8.png?w=800&ssl=1)
+ Doc:- (https://directdevops.blog/2019/10/30/elastic-stack-introduction-and-core-concepts/)
+ Elastic Search
+     Is used to store and index text
+     In our use case, you can think of this as a database of logs, metrics and traces   
+	 Effecient Text Searching Distributed System.
+ LogStash
+     Log Parsing and Conversions
+     Is used to parse the logs into meaningful text
+     It does pattern matching and convert the logs collected from applications and stores in Elastic Search
+ kibana
+     Visualizations of the logs can be observed using kibana
+     Dashboards are built on kibana
+	 Building Dashboards
+ Beats
+     Agents which run/installed on nodes/systems which export logs to LogStash or ElasticSearch and/or report metrics.
+     Differnet kinds of beats are available
+                Metric Beats
+				File Beats
+				Packet Beat
+				Heart Beat
+
+In addition to field send by the user, Elastic Search stores the internal fields for metadata. These fields are as follows
+	_id: unique identifier of document, just like primary key in a database. This can be auto generated or specified by the user
+	_type: Type of the document
+	_index: index name of the document
+Indexes:-
+  Index is a container that stores and manages documents of single type in Elastic Search.
+Types:-
+  Documents with mostly common set of fields are grouped under one Type.           
+
+Elastic Search is a Distributed System, it has nodes and clusters
+
+Shards and replicas:-
+	And index consists of documents of some type, Shards helps in distributing an index over the cluster.
+	Shards help in dividing documents of single index over multiple nodes.
+	Process of dividing data among shards is Sharding. Sharding is Elastic Searches way of scaling and parallelism.
+	By default every index is configured to have five shards in Elastic Search.
+	You can specify the number of Shards while creating an index
+	Since systems might fail in a cluster replica shards or replicas are created and stored in cluster.
+	Despite the failure, Elastic Search runs due to this feature.
+	Replicas are also support querying

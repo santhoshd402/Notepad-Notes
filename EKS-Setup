@@ -1,0 +1,40 @@
+install awscli
+sudo apt-get install awscli -y
+aws configure
+install python3
+
+to setup eks please follow the link
+
+https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html
+
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/latest_release/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+
+sudo mv /tmp/eksctl /usr/local/bin
+
+eksctl version
+install kubectl:
+curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
+kubectl version --client
+
+OR 
+
+we can install like below
+sudo apt-get update && sudo apt-get install -y apt-transport-https
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+sudo apt-get install -y kubectl
+
+
+cluster creation:--
+
+eksctl create cluster --name sample-cluster-1 --version 1.14 --region us-east-1 --nodegroup-name sample-standard-workers-nodes --node-type t2.medium --nodes 2 --nodes-min 1 --nodes-max 3 --ssh-access --ssh-public-key anukokunda --managed
+
+
+eksctl create cluster \
+--name sample-cluster-1 \
+--version 1.14 \
+--region us-east-1 \
+--fargate

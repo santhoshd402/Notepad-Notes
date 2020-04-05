@@ -1,0 +1,116 @@
+### grammer structure for simple IAM
+{
+	"Version": "2012-10-17"
+	"statement": {
+		"Effect": "Allow/Deny"
+		"Action": ""
+		"Resource": ""
+	}
+}
+
+### grammer structure for Multiple services IAM
+{
+	"Version": "2012-10-17"
+	"statement": {
+		"Effect": "Allow/Deny"
+		"Action": ""
+		"Resource": ""
+	},
+	{
+		"Effect": "Allow/Deny"
+		"Action": ""
+		"Resource": ""
+	}
+}
+
+#### Service level scenario
+{
+	"Version": "2012-10-17"
+	"statement": {
+		"Effect": "Allow/Deny"
+		"Action": [
+					"ec2:*",
+					"cloudwatch:*"
+]
+		"Resource": ""
+	},
+	{
+		"Effect": "Allow/Deny"
+		"Action": [
+				"rds:*"
+		]
+		"Resource": ""
+	}
+}
+
+##### Resource level scenario
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:Describe*"
+            ],
+            "Resource": "*"
+        },
+		{
+            "Effect": "Allow",
+            "Action": [
+                "ec2:StartInstances",
+				"ec2:StopInstances"
+            ],
+            "Resource": "arn:aws:ec2:us-east-1:021108654652:instance/i-04441c89774fa63bb"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:*"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+
+
+----------Structure-------
+{
+	 "version_block": 
+     "id_block": 
+     "statements": 
+	 { 
+    "sid_block": "",
+    "principal_block": "",
+    "effect_block": "",
+    "action_block": " ",
+    "resource_block": "",
+    "condition_block": ""
+}
+}
+
+{
+	 "version_block": "2012-10-17" 
+     "statements": 
+	 { 
+    "effect_block": "Allow",
+    "action_block": [
+		"ec2:Describe*",
+	]
+    "resource_block": "*",
+	},
+	{ 
+    "effect_block": "Allow",
+    "action_block": [
+		"ec2:Describe*",
+		"ec2:StartInstances",
+		"ec2:StopInstances"
+	]
+    "resource_block": "arn:aws:ec2:us-east-1:021108654652:instance/i-04441c89774fa63bb",
+	},
+	{ 
+    "effect_block": "Allow",
+    "action_block": "s3:*",
+    "resource_block": "*",
+	}
+}

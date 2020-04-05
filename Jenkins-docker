@@ -1,21 +1,23 @@
-echo "# gameoflife-dockerfile" >> README.md
-git init
-git add README.md
-git commit -m "first commit"
-git remote add origin https://github.com/santhoshd402/gameoflife-dockerfile.git
-git push -u origin master
+https://github.com/santhoshd402/gol-docker.git
 
-/home/jenkins/gol-docker
-/home/jenkins/gol-docker/gameoflife-web/target/gameoflife.war
+Dockerfile:---
+FROM tomcat:8
+LABEL AUTHOR=santhu
+COPY gameoflife.war /usr/local/tomcat/webapps
+EXPOSE 8080
+CMD ["catalina.sh","run"]
 
-cp /home/jenkins/gol-docker/gameoflife-web/target/gameoflife.war /home/jenkins/gol-docker
- 
- COPY gameoflife.war /usr/local/tomcat/webapps
 
-node {
-stage('first') {
-   git 'https://github.com/wakaleo/game-of-life.git'
-   sh label: '', script: 'mvn package'
+```
+node('Docker') {
+    stage('git') {
+    git 'https://github.com/santhoshd402/gol-docker.git'
+    sh 'mvn clean package'
+    sh 'cp /home/jenkins/gol-docker/gameoflife-web/target/gameoflife.war /home/jenkins/workspace/gol-docker'
+}
+    stage('docker') {
+    sh 'docker image build -t gol:$BUILD_NUMBER .'
+    sh 'docker container run --name mytomgol -d -p 8080:8080 gol:$BUILD_NUMBER'
 }
 }
-/home/jenkins/workspace/gol-docker
+```

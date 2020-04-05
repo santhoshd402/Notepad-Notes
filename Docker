@@ -33,11 +33,14 @@ docker container start id
 we cant remove container when it is in up state by using -f force we can remove
 docker container run  and docker container 
 
-CMD and ENTRYPOINT are execute when container is creaating
+CMD and ENTRYPOINT are execute when container is creating
 cmd can be overwritten while we run contianer by passing 
 entrypoint cant be overwritten
 how to get inside container
 while creating/runnimg---- it is interactive mode
+
+ARG will execute at the time of image creation, 
+ENV will be execute at the time of container creation also used while creating image
 
  https://qt-s3-new-testing.s3-us-west-2.amazonaws.com/spring-petclinic.jar
  java -jar spring-petclinic.jar

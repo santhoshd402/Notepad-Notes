@@ -31,9 +31,9 @@ git add -all   --> it will add all chanes
 git commit -m "any msg"  ---> committing changes to local reposiry
 
 git reset ---> remove changes from stage only (means before commit)
+git reset --soft ---> it will remove from local repo and store in stage
 git reset --mixed ---> it will remove changes from localrepo and stage but not in workdir
-git reset --hard ---> it will remove changes from stage and work dir and localrepo also (works before commits)
-git reset --soft ---> it will remove from local repo and store in stage 
+git reset --hard ---> it will remove changes from stage and work dir and localrepo also (works before commits) 
 git reset --hard HEAD~2  ----> it will remove last two logs(commits)from localrepo and stage and even in workdir
 git reset --soft HEAD~2   ----> it will remove last 2 logs(commits) from localrepo and store in 
 

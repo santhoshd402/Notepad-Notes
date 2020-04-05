@@ -15,6 +15,7 @@ adduser ansible
 visudo
 --here add the below line to sudo group
 ansible ALL=(ALL:ALL) NOPASSWD:ALL
+
 ------FOR CENTOS
 login to machine and get into sudo user
 sudo -i
@@ -35,6 +36,7 @@ come to home path run below cmds
 ssh-keygen
 ssh-copy-id <username>@<privateip-node>
 --copy this key to all nodes including localhost also
+ssh-copy-id localhost
 
 -->now install ansible and python on ACS 
 sudo apt update
@@ -110,5 +112,23 @@ we can mention for a task as "become: no"
 	  src: Readme.txt.j2
       dest: "{{ ansible_user_dir }}/Readme.txt"
 
+
+
+------------------------------------------------------Not Working but to workout-------------
+#########Adding more nodes to master at a time use below approach
+add one node and create image from that node 
+from that image you can create n no.of nodes it will add automatically but
+for this to happens in mater node do the below change
+
+vi /etc/ssh/sshd_config
+----change #IgnoreUserKnownHosts ----> IgnoreUserKnownHosts yes
+
+Example look is below:-
+# For this to work you will also need host keys in /etc/ssh/ssh_known_hosts
+# HostbasedAuthentication no
+# Change to yes if you don't trust ~/.ssh/known_hosts for
+# HostbasedAuthentication
+IgnoreUserKnownHosts yes
+-------------------------
 
 
