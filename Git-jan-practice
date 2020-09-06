@@ -63,6 +63,11 @@ git revert <commit id of you want to change/remove at that commit>
 git log
 git push -u origin master
 
+Git Branching Strategy:--
+https://medium.com/dev-genius/choosing-the-right-git-branching-strategy-for-your-team-2a53144fcbdb#:~:text=Vincent%20Driessen%20created%20GitFlow%2C%20and,multiple%20requirements%20and%20feature%20requests.
+
+
+
 
 
 

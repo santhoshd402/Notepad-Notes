@@ -15,7 +15,8 @@ Docker components:-
 1. client:- client is just a terminal whichwill forward our command to daemon(DE) an give reponse
 2. Daemon(Docker Engine):- image(https://i1.wp.com/directdevops.blog/wp-content/uploads/2020/01/docker5.png?w=800&ssl=1)
 
-
+ARG, FROM, RUN, LABEL, EXPOSE, ENV, ADD, COPY, ENTRYPOINT, CMD, USER, WORKDIR
+ 
 
 docker image layers
 
@@ -41,6 +42,10 @@ while creating/runnimg---- it is interactive mode
 
 ARG will execute at the time of image creation, 
 ENV will be execute at the time of container creation also used while creating image
+
+The ADD instruction copies new files, directories or remote file URLs from <src> and adds them to the filesystem of the image at the path <dest>.
+The COPY instruction copies new files or directories from <src> and adds them to the filesystem of the container at the path <dest>.
+Multiple <src> resources may be specified but the paths of files and directories will be interpreted as relative to the source of the context of the build.
 
  https://qt-s3-new-testing.s3-us-west-2.amazonaws.com/spring-petclinic.jar
  java -jar spring-petclinic.jar
