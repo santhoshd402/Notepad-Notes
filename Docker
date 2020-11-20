@@ -13,9 +13,9 @@ we can create conatiners from image and image crestaes by writing Dockerfile wit
 
 Docker components:- 
 1. client:- client is just a terminal whichwill forward our command to daemon(DE) an give reponse
-2. Daemon(Docker Engine):- image(https://i1.wp.com/directdevops.blog/wp-content/uploads/2020/01/docker5.png?w=800&ssl=1)
+32. Daemon(Docker Engine):- image(https://i1.wp.com/directdevops.blog/wp-content/uploads/2020/01/docker5.png?w=800&ssl=1)
 
-ARG, FROM, RUN, LABEL, EXPOSE, ENV, ADD, COPY, ENTRYPOINT, CMD, USER, WORKDIR
+ARG, FROM, RUN, LABEL, EXPOSE, ENV, ADD, COPY, ENTRYPOINT, CMD, USER, WORKDIR, VOLUME, ONBUILD, STOPSIGNAL
  
 
 docker image layers
@@ -79,7 +79,7 @@ first we will write Dockfile
 we will create a optional directory and we create Dockfile with below context
 ...
 FROM tomcat:8
-VOLUME /usr/local/tomcat
+VOLUME /usr/local/tomcat        
 CMD [ "catalina.sh","run" ]
 ...
 get into created directory and create image using that file 
@@ -109,7 +109,6 @@ docker container exec -it 0f77880c9211 /bin/bash
 defaultly we are in /usr/local/tomcat path check here whether the effects done in host volume reflected here or not
 
 
-
 ==================docker networks=============================================
 ---to ping other conatiner without login into conatiner with ip 
 docker exec 9ce1ac15ced7 ping 172.17.0.2
@@ -129,7 +128,6 @@ docker network disconnect bridge cont2
 docker exec 0e95ef3781f0 ping cont1
 
 
-
 ======================docker repository==============
 create a repository in dockerhub
 from docker host run 
@@ -140,6 +138,16 @@ give id and pwd santhud402 Santhu@d402
 ----now push 
  docker push santhud402/myfirstrepo/tomcat:8
 
+============ECR============================
+req:
+install awscli
+configure iam user awsconfigure
+create one repositary and get push commands from there
 
-
+ex: created a repository as myfirstrepoinawsecr
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 021108654652.dkr.ecr.us-east-1.amazonaws.com
+** you can tag image name as our req using below command
+docker tag myfirstrepoinawsecr:latest 021108654652.dkr.ecr.us-east-1.amazonaws.com/myfirstrepoinawsecr:latest
+** you can push image 
+docker push 021108654652.dkr.ecr.us-east-1.amazonaws.com/myfirstrepoinawsecr:latest
 

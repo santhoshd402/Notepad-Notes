@@ -1,3 +1,12 @@
+* Git is a free and open source distributed version control system designed 
+  to handle everything from small to very large projects with speed and efficiency.
+* Git is easy to learn and has a tiny footprint with lightning fast performance. 
+  It outclasses SCM tools like Subversion, CVS, Perforce, and ClearCase with features 
+  like cheap local branching, convenient staging areas, and multiple workflows.
+* Git allows and encourages you to have multiple local branches that can be entirely independent of each other. 
+  The creation, merging, and deletion of those lines of development takes seconds.  
+
+
 git reset ---> remove changes from stage only
 git reset --hard ---> it will remove changes from stage and work dir (works before commits)
 git reset --soft ---> it will remove from local repo and store in stage 
@@ -85,7 +94,11 @@ git remote add origin https://github.com/kshaanu/gitpr.git
 git push -u origin master
 
 
+git remote add <newremote> <newremoteurl>
+git push -u <newremote> <branch-name>
+or
 
+git remote set-url --help
 
 
 

@@ -1,0 +1,367 @@
+Jenkins:
+
+#!/bin/sh
+sudo apt-get update 
+sudo apt-get install openjdk-8-jdk -y
+wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -
+sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list' 
+sudo apt-get update
+sudo apt-get install jenkins -y
+
+sudo apt-get install maven -y
+
+navigate to publicip:8080
+copy the path and see the pwd in server and paste there
+next default plugins 
+add user,pwd here (jenkins all)
+chage publicip to private ip
+vi /etc/ssh/sshd_config  change pwd to yes
+service sshd restart
+add above user to sudo group
+jenkins ALL=(ALL:ALL) NOPASSWD: ALL
+
+to check user privelages 
+sudo cat /etc/passwd
+
+========Working tasks=====
+
+freestyle project with shell:--
+  git clone https://github.com/wakaleo/game-of-life.git
+  cd game-of-life
+  mvn clean package
+
+with git and shell
+  git clone https://github.com/wakaleo/game-of-life.git
+  shell-- mvn clean package
+
+with git and invoke maven
+  git clone https://github.com/wakaleo/game-of-life.git
+  click invoke toplevel maven --- clean package 
+
+Test result:-
+  postbuildaction-- gameoflife-web/target/surefire-reports/*.xml
+Archive artifatcs:- 
+  postbuildaction-- gameoflife-web/target/*.war
+
+
+Pipeline_Script_all_possibilities:---
+
+	node('master') {
+		stage('code') {
+		git 'https://github.com/wakaleo/game-of-life.git'
+	}
+		stage('package') {
+		sh 'mvn clean package'
+	}
+	}
+
+
+node('maven') {
+    stage('clone') {
+    git 'https://github.com/santhoshd402/game-of-life.git'
+}
+    stage('build') {
+    sh 'mvn clean package'
+}
+    stage('outputs') {
+    junit 'gameoflife-web/target/surefire-reports/*.xml'
+    archiveArtifacts artifacts: 'gameoflife-web/target/*.war', followSymlinks: false
+}
+}
+${env.BUILD_NUMBER}
+${timeStamp}
+====failed====
+stage('final') {
+    sh 'echo  ${timeStamp}'
+    sh 'echo "${timeStamp}"'
+    sh 'echo ${BUILD_NUMBER}'
+}
+
+=====Distributed Builds======
+adding user steps on node:-
+vi /etc/ssh/sshd_config  change pwd to yes
+service sshd restart
+adduser jenkins
+visudo
+jenkins ALL=(ALL:ALL) NOPASSWD: ALL
+
+come master switch to jenkins user and do below steps to share keys
+  ssh-keygen
+  ssh-copyid jenkins(nodeusrname)@<privateip>
+cross verify by ping privateip
+
+now in jenkins ui manage jenkins-->manage nodes--> addnode--> new node--> anyname
+  RemoterootDirectory: /home/jenkins  [any folder on node to work there]
+  Labels: give useful labelnames to easy work
+  LaunchMethod: launchagent via SSH
+  Host: privateip
+  credentials: add there and use
+  Host Key Verification Strategy: Known hosts file Verification Strategy
+save then node automaticallay added some times manually launch agent by click there
+
+=====POLLSCM====
+now fork the game-of-life code into your account
+and clone into local/server where ever you want to work to do commits and observe build for pollscm
+Jenkins UI--> freestyle-->
+ we can create projects like same above, 
+ inaddition click on POLLSCM (when new commit in github the build occurs)
+ inschedule we can give cron syntax when to speak with github 
+ asper schedule it will check github if new commit happens build starts otherwise it waits for next time check happens
+
+=====JenkinsFile====
+* The pipeline will be of more benifit if we have this script for building jenkins in our version control system
+* Store Jenkins pipleline script in a file called as "Jenkinsfile" in the root directory of your git
+* Advantage of Jenkinsfile in VCS will help us in having jenkinssteps version controlled and we can make 
+  changes in Jenkins jobs without changing ui
+node('maven') {
+    stage('clone') {
+    git 'https://github.com/santhoshd402/game-of-life.git'
+}
+    stage('build') {
+    sh 'mvn clean package'
+}
+    stage('outputs') {
+    junit 'gameoflife-web/target/surefire-reports/*.xml'
+    archiveArtifacts artifacts: 'gameoflife-web/target/*.war', followSymlinks: false
+}
+}
+save above script in Jenkinsfile and push to game-of-life repo
+
+========Withartifact and sonarqube=====
+node('maven') {
+    stage('clone') {
+    git 'https://github.com/santhoshd402/game-of-life.git'
+}
+    stage('build') {
+    sh 'mvn clean package'
+}
+    stage('outputs') {
+    junit 'gameoflife-web/target/surefire-reports/*.xml'
+    archiveArtifacts artifacts: 'gameoflife-web/target/*.war', followSymlinks: false
+}
+    stage('shareartifact') {
+    sh "curl -u admin:Santhu@d402 -T /home/jenkins/test/workspace/proj-jfrog/gameoflife-web/target/*.war http://34.204.177.222:8082/artifactory/gameoflife/gameoflife${BUILD_NUMBER}.war"
+
+}
+}
+
+
+create pipeline project and in pipiline choose pipeline script from SCM
+SCM-Git
+url-giveurl
+scriptpath-Jenkinsfile
+for info refer - https://i2.wp.com/directdevops.blog/wp-content/uploads/2020/05/jenkins25.png?w=800&ssl=1
+
+=======JenkinsWIthParaameters======
+parameters {
+		string(name: 'BRANCH_FOR_BUILD', defaultValue: 'master', description: 'Enter the branch to be built')
+	}
+    stages {
+        stage('Source'){
+            steps {
+                git url: 'https://github.com/dummyrepos/spring-petclinic.git', branch: "${params.BRANCH_FOR_BUILD}"
+            }
+        }
+		
+INPUT:--
+stage('Package'){
+            steps {
+                sh 'mvn package'
+				input 'continue to next step?'
+				archiveArtifacts 'target/*.jar'
+            }
+
+BuildAfterBuild:---
+
+agent {label 'MASTER'}
+	triggers {
+	   upstream(upstreamProjects: 'dummy', threshold: hudson.model.Result.SUCCESS)
+	}
+
+**********==========STASHandUNSTASH============ 
+pipeline {
+    agent any
+    stages {
+        stage('build') {
+            agent {label: 'MAVEN'}
+            steps {
+            
+                
+                git url: 'https://github.com/dummyrepos/spring-petclinic.git'
+                sh 'mvn package'
+                stash name: 'spc-jar', includes: 'target/spring-petclinic.jar'
+            }
+            
+        }
+        
+        stage('deploy') {
+            agent {label: 'Ansible'}			
+            steps {
+                unstash 'spc-jar'
+                git url: 'https://github.com/dummyrepos/spring-petclinic-ansible.git
+                sh 'ansible-playbook -i hosts deploy.yaml'
+            }
+            
+        }
+    }
+}
+
+
+
+
+======BACKUP=====
+Managejenkins---> Manageplugins
+ThinBackup
+configure it
+
+======EmailNotification======
+Managejenkins---> Manageplugins-->Email Extension Template
+
+Managejenkins---> configureSystem---> E-mail Notification(scroll downto end)
+
+https://i0.wp.com/directdevops.blog/wp-content/uploads/2020/05/jenkins4.png?w=800&ssl=1 (for configuration)
+
+later PostbuildAction--> EmailNotification-->add recipients
+
+https://i0.wp.com/directdevops.blog/wp-content/uploads/2020/05/jenkins3.png?w=800&ssl=1 
+[for contant type go up in Extended E-mail Notification]
+
+****** Blue Ocean Plugin(oncecheckit)
+
+
+===========JFROGARTIFACTORY=========
+Create one ubuntu server in size of medium
+https://websiteforstudents.com/how-to-install-jfrog-artifactory-on-ubuntu-18-04-16-04/
+
+sudo apt update
+sudo apt dist-upgrade
+sudo apt autoremove
+sudo apt-get install openjdk-8-jdk -y
+sudo apt install wget software-properties-common
+sudo -i
+wget -qO - https://api.bintray.com/orgs/jfrog/keys/gpg/public.key | apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://jfrog.bintray.com/artifactory-debs $(lsb_release -cs) main"
+sudo apt update
+sudo apt install jfrog-artifactory-oss
+systemctl stop artifactory.service
+systemctl start artifactory.service
+systemctl enable artifactory.service
+systemctl status artifactory.service
+
+open <publicip>:8082
+Use admin and password by deafult and change pwd
+
+install artifactory plugin in jenkins
+Managejenkins---> Manageplugins--> available---> Artifactory
+
+and open configure and come to JFROG section
+Managejenkins---> configureSystem---> JFROG -->
+Artifactory servers	---> Add Artifactory server--> 
+and provide details asper
+Server ID	:  <asurwish>
+URL  : http://<public/staticip ofjfrogserver>:8082/artifactory
+below Default Deployer Credentials
+Username,pwd which you used to login jfrog server
+you can check connection by click on 'testconnestion' there
+
+To view artifacts in artifactoryserver 
+
+applications-->artifactory--->createdrepo---> click down arrow
+
+
+============SONARQUBE===============
+
+Take t2.medium node
+
+
+sudo apt update
+sudo apt dist-upgrade
+sudo apt autoremove
+sudo apt-get install openjdk-8-jdk -y
+sudo vi /etc/apt/sources.list:  [add belowline to this folder]
+deb [trusted=yes] http://downloads.sourceforge.net/project/sonar-pkg/deb  binary/
+sudo apt-get install sonar=6.7.4
+sudo service sonar start
+
+login <publicip>:9000 with user name and password is admin
+
+you will be asked to provide a token
+give any name and later select java,maven for java project 
+store that token it is useful to sync this sonar with jenkins
+
+install sonarqubescanner plugin in jenkins
+Managejenkins---> Manageplugins--> available---> SONARQUBEScanner
+
+and open configure and come to SonarQube servers section
+Managejenkins---> configureSystem--->SonarQube servers
+click on addsonarqubeserver
+NAME: give name and remember this it is useful in script [ex: SONAR-6.7.4]
+Ip: give url of sonar http://<publicip>:9000
+To autherise token click on add and 
+Kind: Secret Text
+Secret: token whic you copied from sonar server
+ID,Description: as you need
+NOTE:  [if add button not enable Managejenkins--->ManageCredetials
+under domain click arrow beside global to add token now back to add sonarqube it shows and add that]
+
+
+
+
+stage('SonarQube analysis') {
+    // performing sonarqube analysis with "withSonarQubeENV(<Name of Server configured in Jenkins>)"
+    withSonarQubeEnv('SONAR-6.7.4') {
+      // requires SonarQube Scanner for Maven 3.2+
+      sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.2:sonar'
+
+
+Execute the SonarQube Scanner for Maven from your computer
+Running a SonarQube analysis with Maven is straighforward. You just need to run the following command in your project's folder.
+mvn sonar:sonar \
+  -Dsonar.host.url=http://34.236.187.229:9000 \
+  -Dsonar.login=6e0c0dcc8e3f522f80f7860a9fb833ad57c3c7e5
+
+*********************===============FINAL Jenkinsfile With all====================**************************
+
+node('maven') {
+    stage('clone') {
+    git 'https://github.com/santhoshd402/game-of-life.git'
+}
+    stage('build') {
+    sh 'mvn clean package'
+}
+    stage('outputs') {
+    junit 'gameoflife-web/target/surefire-reports/*.xml'
+    archiveArtifacts artifacts: 'gameoflife-web/target/*.war', followSymlinks: false
+}
+    stage('shareartifact') {
+    sh "curl -u admin:Santhu@d402 -T /home/jenkins/test/workspace/proj-jfrog/gameoflife-web/target/*.war http://100.25.43.47:8082/artifactory/gameoflife/gameoflife${BUILD_NUMBER}.war"
+
+}
+    stage('SonarQube analysis') {
+    // performing sonarqube analysis with "withSonarQubeENV(<Name of Server configured in Jenkins>)"
+    withSonarQubeEnv('SONAR-6.7.4') {
+      // requires SonarQube Scanner for Maven 3.2+
+      sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.2:sonar'
+    }
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
