@@ -101,7 +101,7 @@ or
 git remote set-url --help
 
 
-
+git log --oneline  [too see one line output of commits]
 
 
 

@@ -17,6 +17,8 @@ workdir--->stage(index-area)--->localrepo--->remoterepo--->stash
 git config --global user.name "santhoshd402"
 git config --global user.email santhosh.d402@gmail.com
 
+git log --oneline  [too see one line output of commits]
+
 sc-1----
 create 2 folders with unique names
 in one folder create a file and other fol keep empty
@@ -66,15 +68,54 @@ git push -u origin master
 Git Branching Strategy:--
 https://medium.com/dev-genius/choosing-the-right-git-branching-strategy-for-your-team-2a53144fcbdb#:~:text=Vincent%20Driessen%20created%20GitFlow%2C%20and,multiple%20requirements%20and%20feature%20requests.
 
- # Compiled files
+
+How to ignore files or directory i git: 
+* create a .gitignore file in the git repository and add all the exclusions over there
+and add files which you want to ignore or skip
+Examples:
+#ignoring log files
+*.log
+# ignoring bin directories & its contents
+bin/*
+# Compiled files
 *.tfstate
 *.tfstate.backup
 *.pem
 # Module directory
 .terraform/
 
+URL:- https://www.toptal.com/developers/gitignore
+for generating gitignore files of folders for language
+Ex: open that url and type terraform and enter will  give some foiles to ignore
 
 
+https://directdevops.blog/2020/09/20/devops-classroom-series-20-sept-2020/
 
+--no-ff: when we merge code to empty branch [means no work so no conflicts] we use this
+ex: dev_branch to Master_branch
+
+* Diff between fetch and pull:- pull=fecth+merge[conflicts occurs]
+
+* diff between rebase and merge: Git rebase and merge both integrate changes from one branch into another.
+	Git rebase moves a feature branch into a master. Git merge adds a new commit, preserving the history
+* cherrypick: Cherry picking is the act of picking a commit/sequence of commit from a branch and applying it to another
+	git cherry-pick A^..B
+
+* The difference between tags and branches are that a branch always points to the top of a development line 
+	and will change when a new commit is pushed whereas a tag will not change. Thus tags are more useful to "tag" a specific version 
+	and the tag will then always stay on that version and usually not be changed.	
+
+==================TAGS=========
+* gittag:- A Tag points to specific repositories history which is important
+git tag
+* Git has two types of tags
+1. Light weighted:
+	Is a pointer to a specific commit
+	Create:
+	git tag <tag_name>
+2. Annotated:
+	Annotated are stored as full objects in git database.
+	Create:
+	git tag -a <tag_name> -m "tag_message"
 
 
