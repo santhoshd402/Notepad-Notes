@@ -1,14 +1,26 @@
 Jenkins:
+1. Declarative : DSL based pipeline [have to know groovy]
+	started with pipeline()
+2. Scripted: we are using this 
+	we can write simply using stages
+	starting with nodea()
 
 #!/bin/sh
 sudo apt-get update 
 sudo apt-get install openjdk-8-jdk -y
-wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -
-sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list' 
-sudo apt-get update
-sudo apt-get install jenkins -y
-
 sudo apt-get install maven -y
+wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add - 
+sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list' 
+sudo apt-get update 
+sudo apt-get install jenkins -y
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add - 
+sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > \
+    /etc/apt/sources.list.d/jenkins.list' 
+sudo apt-get update
+sudo apt-get install jenkins
+
 
 navigate to publicip:8080
 copy the path and see the pwd in server and paste there
@@ -301,7 +313,7 @@ To autherise token click on add and
 Kind: Secret Text
 Secret: token whic you copied from sonar server
 ID,Description: as you need
-NOTE:  [if add button not enable Managejenkins--->ManageCredetials
+0NOTE:  [if add button not enable Managejenkins--->ManageCredetials
 under domain click arrow beside global to add token now back to add sonarqube it shows and add that]
 
 
@@ -348,9 +360,39 @@ node('maven') {
 }
 
 
+=====================================================
+
+Types of pipeline:
+1. pipelinescript: writting script here itself
+2. pipelinescript from SCM: JenkinsFile from git repo [it automatically fetch the file after we configure]
+
+Jenkins triggers:
+build periodically: build trigger automatically based on cron syntax
+pollscm: jenkins communicate to repository based on cron if it find new commit build starts trigger
+githooks: for everycommit/push/change 
+
+Backup:
+thinbackup plugin
+
+Jenkins userprofiles creation:
+Role-based Authorization Strategy  [RBAC plugin]
+
+agents:
+Masterslave
+ssh-keygen
+launch via ssh agent [type]
+
+pipeline jobs: [build after other projects build]
+3 jobs build sequentially/parellely but in single jobs
+
+how to run .net projects in jenkins:
+install plugin msbuild 
 
 
 
+
+
+https://directdevops.blog/2020/09/28/devops-classroom-series-27-sept-2020/
 
 
 

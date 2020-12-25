@@ -98,6 +98,9 @@ ex: dev_branch to Master_branch
 
 * diff between rebase and merge: Git rebase and merge both integrate changes from one branch into another.
 	Git rebase moves a feature branch into a master. Git merge adds a new commit, preserving the history
+	* At a high level, rebasing can be understood as “moving the base of a branch onto a different position
+	* Use merge in cases where you want a set of commits to be clearly grouped together in history.
+	* Use rebase when you want to keep a linear commit history.
 * cherrypick: Cherry picking is the act of picking a commit/sequence of commit from a branch and applying it to another
 	git cherry-pick A^..B
 
@@ -107,6 +110,8 @@ ex: dev_branch to Master_branch
 
 ==================TAGS=========
 * gittag:- A Tag points to specific repositories history which is important
+* tags are more useful to "tag" a specific version and the tag will then always stay on that version and usually not be changed.
+
 git tag
 * Git has two types of tags
 1. Light weighted:
@@ -118,4 +123,5 @@ git tag
 	Create:
 	git tag -a <tag_name> -m "tag_message"
 
-
+=================Diff btwn tags and branch=============
+* The difference between tags and branches are that a branch always points to the top of a development line and will change when a new commit is pushed whereas a tag will not change. Thus tags are more useful to "tag" a specific version and the tag will then always stay on that version and usually not be changed.
